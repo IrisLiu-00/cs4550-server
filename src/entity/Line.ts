@@ -5,9 +5,9 @@ import {
   PrimaryColumn,
   OneToMany,
   JoinColumn,
-  OneToOne,
   PrimaryGeneratedColumn,
   CreateDateColumn,
+  ManyToOne,
 } from 'typeorm';
 import { User } from './User';
 
@@ -25,7 +25,7 @@ export class Line extends BaseEntity {
   @Column()
   userId: number;
 
-  @OneToOne(() => User)
+  @ManyToOne(() => User)
   @JoinColumn({ name: 'userId' })
   user: User;
 

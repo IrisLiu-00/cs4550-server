@@ -13,7 +13,7 @@ export class User extends BaseEntity {
   @Column({ type: 'varchar', length: 128 })
   password: string;
 
-  @Column({ type: 'varchar', length: 128 })
+  @Column({ type: 'varchar', length: 128, unique: true })
   displayName: string;
 
   @Column({ type: 'enum', enum: UserRole })
@@ -22,7 +22,7 @@ export class User extends BaseEntity {
   @Column()
   teamId: number;
 
-  @ManyToOne(() => Team, (team) => team.members)
+  @ManyToOne(() => Team, (team) => team.members, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'teamId' })
   team: Team;
 }

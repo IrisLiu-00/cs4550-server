@@ -4,9 +4,7 @@ import * as bodyParser from 'body-parser';
 import { Request, Response } from 'express';
 import { AppDataSource } from './data-source';
 import { Routes } from './routes';
-import { User } from './entity/User';
-import { UserRole } from './types';
-import { Team } from './entity/Team';
+import { seeds } from './seed/seeds';
 
 AppDataSource.initialize()
   .then(async () => {
@@ -30,29 +28,7 @@ AppDataSource.initialize()
     app.listen(4000);
 
     // insert data for test
-    const user = User.create({
-      email: 'hello@email.com',
-      password: '123123',
-      displayName: 'liui',
-      role: UserRole.LEADER,
-    });
-    const team = Team.create({
-      id: 'The Panthers',
-      color: '#f25edc',
-      description: 'Pink and pretty! We love to write feel good stories about nice things.',
-      lead: user,
-    });
-    user.team = team;
-    await team.save();
-    await user.save();
-
-    // await AppDataSource.manager.save(
-    //     AppDataSource.manager.create(User, {
-    //         firstName: "Phantom",
-    //         lastName: "Assassin",
-    //         age: 24
-    //     })
-    // )
+    // await seeds();
 
     console.log('Express server has started on port 4000');
   })

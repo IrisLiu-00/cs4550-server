@@ -16,11 +16,11 @@ export class Team extends BaseEntity {
   @Column({ nullable: true })
   leadId: number;
 
-  @OneToOne(() => User)
+  @OneToOne(() => User, { cascade: ['remove'] })
   @JoinColumn({ name: 'leadId' })
   lead: User;
 
-  @OneToMany((type) => User, (user) => user.teamId)
+  @OneToMany((type) => User, (user) => user.teamId, { onDelete: 'CASCADE' })
   members: User[];
 
   @OneToMany((type) => Feature, (feature) => feature.teamId)
