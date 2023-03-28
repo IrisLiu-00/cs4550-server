@@ -16,6 +16,7 @@ export interface User extends UserPartial {
 }
 
 export type Line = {
+  id: number;
   text: string;
   timestamp: Date;
   user: UserPartial;

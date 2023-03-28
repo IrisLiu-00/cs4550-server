@@ -5,7 +5,7 @@ import { UserRole } from '../types';
 export class UserController {
   // Get currently logged in user
   async getProfile(request: Request, response: Response) {
-    const user = await User.findOne({ where: { role: UserRole.WRITER } });
+    const user = await User.findOne({ where: { role: UserRole.LEADER } });
     if (!user) {
       response.status(401);
       return;

@@ -32,4 +32,34 @@ export const Routes = [
     controller: StoryController,
     action: 'postLine',
   },
+  {
+    method: 'delete',
+    route: 'stories/:id/:lineId',
+    controller: StoryController,
+    action: 'deleteLine',
+  },
+  {
+    method: 'get',
+    route: 'stories/search/:criteria',
+    controller: StoryController,
+    action: 'getSearch',
+  },
+  {
+    method: 'get',
+    route: 'stories/recent/global',
+    controller: StoryController,
+    action: 'getRecentGlobal',
+  },
+  {
+    method: 'get',
+    route: 'stories/recent/user/:id',
+    controller: StoryController,
+    action: 'getRecentForUser',
+  },
+  {
+    method: 'get',
+    route: 'stories/recent/team/:id',
+    controller: StoryController,
+    action: 'getRecentForTeam',
+  },
 ];
