@@ -1,4 +1,5 @@
 import { StoryController } from './controller/StoryController';
+import { TeamController } from './controller/TeamController';
 import { UserController } from './controller/UserController';
 
 export const Routes = [
@@ -61,5 +62,11 @@ export const Routes = [
     route: 'stories/recent/team/:id',
     controller: StoryController,
     action: 'getRecentForTeam',
+  },
+  {
+    method: 'get',
+    route: 'teams',
+    controller: TeamController,
+    action: 'getAll',
   },
 ];

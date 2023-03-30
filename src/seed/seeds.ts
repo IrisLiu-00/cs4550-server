@@ -25,7 +25,7 @@ export const seeds = async () => {
     id: 'The Panthers',
     color: '#f25edc',
     description: 'Pink and pretty! We love to write feel good stories about nice things.',
-    lead: leader,
+    leadId: leader.id,
   });
   leader.team = team;
   const writer = User.create({

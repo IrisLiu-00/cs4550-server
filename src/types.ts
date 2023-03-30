@@ -41,7 +41,7 @@ export interface StoryDetail extends StoryPartial {
   lines: Line[];
 }
 
-export type Team = {
+export type TeamSummary = {
   id: string;
   color: string;
   description: string;

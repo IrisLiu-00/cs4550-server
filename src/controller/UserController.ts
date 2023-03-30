@@ -25,6 +25,7 @@ export class UserController {
   }
 
   async patch(request: Request, response: Response) {
+    // TODO: perms check?
     const id = parseInt(request.params.id);
     const user = await User.findOne({ where: { id } });
     if (!user) {
@@ -39,11 +40,12 @@ export class UserController {
 
     try {
       await user.save();
+      return user;
     } catch (err) {
-      console.error(err);
+      console.error(err.message);
       response.status(400);
+      if (err.code === 'ER_DUP_ENTRY') return 'Username already in use.';
     }
-    return user;
   }
 
   // async remove(request: Request, response: Response, next: NextFunction) {
