@@ -6,9 +6,9 @@ import { Team } from './entity/Team';
 import { User } from './entity/User';
 
 export const AppDataSource = new DataSource({
-  type: 'mysql',
+  type: 'postgres',
   host: 'localhost',
-  port: 3306,
+  port: 5432,
   username: 'storyline',
   password: 'storyline123',
   database: 'storyline',

@@ -16,7 +16,7 @@ export class StoryController {
         .select('line.artId', 'artId')
         .addSelect('COUNT(*)', 'length')
         .addSelect('MAX(line.timestamp)', 'updatedAt')
-        .where('line.artId IN (:ids)', { ids })
+        .where(`line.artId IN (${ids.join(',')})`)
         .groupBy('line.artId')
         .getRawMany();
       return this.storyService.formatStorySummaries(data, lineData);
@@ -34,7 +34,7 @@ export class StoryController {
         .addSelect('COUNT(*)', 'length')
         .addSelect('MAX(line.timestamp)', 'updatedAt')
         .groupBy('line.artId')
-        .orderBy('updatedAt', 'DESC')
+        .orderBy('"updatedAt"', 'DESC')
         .limit(12)
         .getRawMany();
       const artIds = lineData.map((line) => line.artId);
@@ -56,7 +56,7 @@ export class StoryController {
         .addSelect('MAX(line.timestamp)', 'updatedAt')
         .where('line.userId = :userId', { userId })
         .groupBy('line.artId')
-        .orderBy('updatedAt', 'DESC')
+        .orderBy('"updatedAt"', 'DESC')
         .limit(12)
         .getRawMany();
       const artIds = lineData.map((line) => line.artId);
@@ -80,7 +80,7 @@ export class StoryController {
         .innerJoin('line.user', 'user')
         .where('user.teamId = :teamId', { teamId })
         .groupBy('line.artId')
-        .orderBy('updatedAt', 'DESC')
+        .orderBy('"updatedAt"', 'DESC')
         .limit(12)
         .getRawMany();
       const artIds = lineData.map((line) => line.artId);
@@ -121,7 +121,7 @@ export class StoryController {
     const id = parseInt(request.params.id);
     const { lineText } = request.body;
     // TODO: get userID from token??
-    const line = Line.create({ text: lineText, artId: id, userId: 2 });
+    const line = Line.create({ text: lineText, artId: id, userId: 4 });
     try {
       await line.save();
       return line;

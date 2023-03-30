@@ -18,9 +18,9 @@ AppDataSource.initialize()
       (app as any)[route.method](`/api/${route.route}`, (req: Request, res: Response, next: Function) => {
         const result = new (route.controller as any)()[route.action](req, res, next);
         if (result instanceof Promise) {
-          result.then((result) => res.json(result !== null && result !== undefined ? result : {}));
+          result.then((result) => res.json(result));
         } else {
-          res.json(result !== null && result !== undefined ? result : {});
+          res.json(result);
         }
       });
     });
