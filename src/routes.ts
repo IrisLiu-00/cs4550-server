@@ -69,4 +69,16 @@ export const Routes = [
     controller: TeamController,
     action: 'getAll',
   },
+  {
+    method: 'get',
+    route: 'teams/:id',
+    controller: TeamController,
+    action: 'get',
+  },
+  {
+    method: 'patch',
+    route: 'teams/:id',
+    controller: TeamController,
+    action: 'patch',
+  },
 ];

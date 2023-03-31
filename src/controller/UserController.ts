@@ -16,6 +16,10 @@ export class UserController {
   async get(request: Request, response: Response) {
     // TODO: exclude password, email if not same profile
     const id = parseInt(request.params.id);
+    if (isNaN(id)) {
+      response.status(400);
+      return;
+    }
     const user = await User.findOne({ where: { id } });
     if (!user) {
       response.status(404);
@@ -27,6 +31,10 @@ export class UserController {
   async patch(request: Request, response: Response) {
     // TODO: perms check?
     const id = parseInt(request.params.id);
+    if (isNaN(id)) {
+      response.status(400);
+      return;
+    }
     const user = await User.findOne({ where: { id } });
     if (!user) {
       response.status(404);

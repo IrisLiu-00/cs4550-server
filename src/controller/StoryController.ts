@@ -49,6 +49,10 @@ export class StoryController {
   // Get logged in user's most recent stories  /stories/recent/user/:id
   async getRecentForUser(request: Request, response: Response): Promise<StorySummary[]> {
     const userId = parseInt(request.params.id);
+    if (isNaN(userId)) {
+      response.status(400);
+      return;
+    }
     try {
       const lineData = await Line.createQueryBuilder('line')
         .select('line.artId', 'artId')
@@ -97,6 +101,10 @@ export class StoryController {
   // Get details for one story
   async get(request: Request, response: Response): Promise<StoryDetail> {
     const id = parseInt(request.params.id);
+    if (isNaN(id)) {
+      response.status(400);
+      return;
+    }
 
     try {
       const resp = await axios.get(
@@ -119,6 +127,10 @@ export class StoryController {
   // Post new line for story
   async postLine(request: Request, response: Response) {
     const id = parseInt(request.params.id);
+    if (isNaN(id)) {
+      response.status(400);
+      return;
+    }
     const { lineText } = request.body;
     // TODO: get userID from token??
     const line = Line.create({ text: lineText, artId: id, userId: 4 });
@@ -134,6 +146,10 @@ export class StoryController {
   // Delete line for story
   async deleteLine(request: Request, response: Response) {
     const lineId = parseInt(request.params.lineId);
+    if (isNaN(lineId)) {
+      response.status(400);
+      return;
+    }
     try {
       const line = await Line.findOne({ where: { id: lineId } });
       await line.remove();

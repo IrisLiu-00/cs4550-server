@@ -48,3 +48,12 @@ export type TeamSummary = {
   score: number;
   leadId: number;
 };
+
+export type TeamDetail = {
+  id: string;
+  color: string;
+  description: string;
+  score: number;
+  leadId: number;
+  members: UserPartial[];
+};
