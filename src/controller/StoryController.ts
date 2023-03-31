@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { Line } from '../entity/Line';
 import { StoryDetail, StorySummary } from '../types';
 import { StoryService } from './StoryService';
+import { Feature } from '../entity/Feature';
 
 export class StoryController {
   storyService = new StoryService();
@@ -96,7 +97,29 @@ export class StoryController {
     }
   }
 
-  // Get featured stories for team /stories/featured/team/:id or maybe move to features endpoint
+  // Get most recent stories for team /stories/recent/team/:id
+  async getFeaturesForTeam(request: Request, response: Response): Promise<StorySummary[]> {
+    const teamId = request.params.id;
+    try {
+      const lineData = await Line.createQueryBuilder('line')
+        .select('line.artId', 'artId')
+        .addSelect('COUNT(*)', 'length')
+        .addSelect('MAX(line.timestamp)', 'updatedAt')
+        .innerJoin('line.user', 'user')
+        .innerJoin(Feature, 'feature', 'line.artId = feature.artId')
+        .where('user.teamId = :teamId', { teamId })
+        .groupBy('line.artId')
+        .orderBy('"updatedAt"', 'DESC')
+        .limit(12)
+        .getRawMany();
+      const artIds = lineData.map((line) => line.artId);
+      const data = await this.storyService.getArtByIds(artIds);
+      return this.storyService.formatStorySummaries(data, lineData);
+    } catch (err) {
+      console.log(err);
+      response.status(400);
+    }
+  }
 
   // Get details for one story
   async get(request: Request, response: Response): Promise<StoryDetail> {
@@ -117,6 +140,8 @@ export class StoryController {
         where: { artId: id },
         relations: { user: true },
       });
+      const features = await Feature.find({ where: { artId: id }, relations: ['team'] });
+      data.featured = features.map((f) => f.team.id);
       return data;
     } catch (err) {
       console.log(err);
@@ -154,6 +179,27 @@ export class StoryController {
       const line = await Line.findOne({ where: { id: lineId } });
       await line.remove();
       response.status(204);
+    } catch (err) {
+      console.log(err);
+      response.status(400);
+    }
+  }
+
+  async toggleFeature(request: Request, response: Response) {
+    const id = parseInt(request.params.id);
+    if (isNaN(id)) {
+      response.status(400);
+      return;
+    }
+
+    const { teamId } = request.body;
+    const feature = await Feature.findOne({ where: { teamId, artId: id } });
+    try {
+      if (feature) {
+        await feature.remove();
+      } else {
+        await Feature.create({ artId: id, teamId }).save();
+      }
     } catch (err) {
       console.log(err);
       response.status(400);

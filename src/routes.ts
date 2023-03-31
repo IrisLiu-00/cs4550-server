@@ -65,6 +65,18 @@ export const Routes = [
   },
   {
     method: 'get',
+    route: 'stories/features/team/:id',
+    controller: StoryController,
+    action: 'getFeaturesForTeam',
+  },
+  {
+    method: 'patch',
+    route: 'stories/:id/features',
+    controller: StoryController,
+    action: 'toggleFeature',
+  },
+  {
+    method: 'get',
     route: 'teams',
     controller: TeamController,
     action: 'getAll',

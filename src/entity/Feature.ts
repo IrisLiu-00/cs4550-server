@@ -8,9 +8,9 @@ export class Feature extends BaseEntity {
   artId: number;
 
   @PrimaryColumn()
-  teamId: number;
+  teamId: string;
 
   @ManyToOne(() => Team)
-  @JoinColumn({ name: 'leadId' })
+  @JoinColumn({ name: 'teamId' })
   team: Team;
 }
