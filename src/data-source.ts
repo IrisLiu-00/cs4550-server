@@ -7,10 +7,10 @@ import { User } from './entity/User';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
-  host: 'localhost',
+  host: process.env.DB_HOST,
   port: 5432,
   username: 'storyline',
-  password: 'storyline123',
+  password: process.env.DB_PASSWORD,
   database: 'storyline',
   synchronize: true,
   logging: false,

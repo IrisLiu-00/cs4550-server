@@ -1,3 +1,5 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
 import * as express from 'express';
 import * as cors from 'cors';
 import * as bodyParser from 'body-parser';
