@@ -11,12 +11,13 @@ type LineData = {
 export class StoryService {
   async getArtBySearch(criteria: string) {
     const resp = await axios.get(
-      `https://api.artic.edu/api/v1/artworks/search?q=${criteria}&query[term][is_public_domain]=true&fields=id,image_id,thumbnail,title`
+      `https://api.artic.edu/api/v1/artworks/search?q=${criteria}&query[term][is_public_domain]=true&fields=id,image_id,thumbnail,title&limit=12`
     );
     return resp.data.data;
   }
 
   async getArtByIds(ids: number[]) {
+    if (ids.length === 0) return [];
     const resp = await axios.get(
       `https://api.artic.edu/api/v1/artworks?ids=${ids.join(
         ','

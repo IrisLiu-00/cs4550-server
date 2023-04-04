@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Request, Response } from 'express';
 import { Line } from '../entity/Line';
-import { StoryDetail, StorySummary } from '../types';
+import { StoryDetail, StorySummary, UserRole } from '../types';
 import { StoryService } from './StoryService';
 import { Feature } from '../entity/Feature';
 
@@ -156,9 +156,12 @@ export class StoryController {
       response.status(400);
       return;
     }
+    if (request.session['profile']?.id === undefined) {
+      response.status(401);
+      return 'Must be logged in';
+    }
     const { lineText } = request.body;
-    // TODO: get userID from token??
-    const line = Line.create({ text: lineText, artId: id, userId: 4 });
+    const line = Line.create({ text: lineText, artId: id, userId: request.session['profile']?.id });
     try {
       await line.save();
       return line;
@@ -175,6 +178,11 @@ export class StoryController {
       response.status(400);
       return;
     }
+    if (request.session['profile']?.role !== UserRole.LEADER) {
+      response.status(401);
+      return 'Must be a team leader';
+    }
+
     try {
       const line = await Line.findOne({ where: { id: lineId } });
       await line.remove();
@@ -190,6 +198,10 @@ export class StoryController {
     if (isNaN(id)) {
       response.status(400);
       return;
+    }
+    if (request.session['profile']?.role !== UserRole.LEADER) {
+      response.status(401);
+      return 'Must be a team leader';
     }
 
     const { teamId } = request.body;

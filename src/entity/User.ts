@@ -20,7 +20,7 @@ export class User extends BaseEntity {
   role: UserRole;
 
   @Column()
-  teamId: number;
+  teamId: string;
 
   @ManyToOne(() => Team, (team) => team.members, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'teamId' })

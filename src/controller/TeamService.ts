@@ -10,10 +10,9 @@ export class TeamService {
       .addSelect('MIN(team.color)', 'color')
       .addSelect('MIN(team.description)', 'description')
       .addSelect('MIN(team.leadId)', 'leadId')
-      .addSelect('COUNT(DISTINCT line.id) / COUNT(DISTINCT user.id)', 'score')
+      .addSelect('COUNT(DISTINCT line.id) / GREATEST((COUNT(DISTINCT user.id) - 1), 1)', 'score')
       .leftJoin(Line, 'line', 'line.userId = user.id')
-      .innerJoin(Team, 'team', 'user.teamId = team.id')
-      .where('user.role = :writer', { writer: UserRole.WRITER });
+      .innerJoin(Team, 'team', 'user.teamId = team.id');
 
     if (teamId) query = query.where('team.id = :teamId', { teamId });
 

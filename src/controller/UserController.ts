@@ -1,20 +1,17 @@
 import { Request, Response } from 'express';
 import { User } from '../entity/User';
 import { UserRole } from '../types';
+import { UserService } from './UserService';
 
 export class UserController {
+  userService = new UserService();
+
   // Get currently logged in user
   async getProfile(request: Request, response: Response) {
-    const user = await User.findOne({ where: { role: UserRole.WRITER } });
-    if (!user) {
-      response.status(401);
-      return;
-    }
-    return user;
+    return request.session['profile'];
   }
 
   async get(request: Request, response: Response) {
-    // TODO: exclude password, email if not same profile
     const id = parseInt(request.params.id);
     if (isNaN(id)) {
       response.status(400);
@@ -25,15 +22,23 @@ export class UserController {
       response.status(404);
       return;
     }
-    return user;
+    if (user.id === request.session['profile']?.id) {
+      return user;
+    } else {
+      // exclude private info if not the same user
+      return { id: user.id, displayName: user.displayName, role: user.role, teamId: user.teamId };
+    }
   }
 
   async patch(request: Request, response: Response) {
-    // TODO: perms check?
     const id = parseInt(request.params.id);
     if (isNaN(id)) {
       response.status(400);
-      return;
+      return 'User not found';
+    }
+    if (id !== request.session['profile']?.id) {
+      response.status(401);
+      return 'Cannot patch a user profile other than your own';
     }
     const user = await User.findOne({ where: { id } });
     if (!user) {
@@ -48,6 +53,7 @@ export class UserController {
 
     try {
       await user.save();
+      request.session['profile'] = user;
       return user;
     } catch (err) {
       console.error(err.message);
@@ -56,17 +62,40 @@ export class UserController {
     }
   }
 
-  // async remove(request: Request, response: Response, next: NextFunction) {
-  //     const id = parseInt(request.params.id)
+  async signup(request: Request, response: Response) {
+    const { role, username } = request.body;
+    const duplicate = await User.findOne({ where: { displayName: username } });
+    if (duplicate) {
+      response.status(400);
+      return 'Username already taken';
+    }
+    try {
+      const user =
+        role === UserRole.LEADER
+          ? await this.userService.registerLeader(request.body)
+          : await this.userService.registerMember(request.body);
+      request.session['profile'] = user;
+      return user;
+    } catch (err) {
+      console.error(err.message);
+      response.status(400);
+      return err.message;
+    }
+  }
 
-  //     let userToRemove = await this.userRepository.findOneBy({ id })
+  async login(request: Request, response: Response) {
+    const { username, password } = request.body;
+    const user = await User.findOne({ where: { displayName: username, password } });
+    if (!user) {
+      response.status(404);
+      return 'Credentials not recognized';
+    }
+    request.session['profile'] = user;
 
-  //     if (!userToRemove) {
-  //         return "this user not exist"
-  //     }
+    return user;
+  }
 
-  //     await this.userRepository.remove(userToRemove)
-
-  //     return "user has been removed"
-  // }
+  async logout(request: Request, response: Response) {
+    request.session.destroy(() => {});
+  }
 }

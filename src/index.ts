@@ -3,6 +3,7 @@ dotenv.config();
 import * as express from 'express';
 import * as cors from 'cors';
 import * as bodyParser from 'body-parser';
+import * as session from 'express-session';
 import { Request, Response } from 'express';
 import { AppDataSource } from './data-source';
 import { Routes } from './routes';
@@ -10,9 +11,18 @@ import { seeds } from './seed/seeds';
 
 AppDataSource.initialize()
   .then(async () => {
-    // create express app
     const app = express();
-    app.use(cors());
+    app.use(
+      session({
+        secret: process.env.SECRET,
+        resave: false,
+        saveUninitialized: true,
+        cookie: { secure: false },
+      })
+    );
+    app.use(
+      cors({ credentials: true, origin: ['http://localhost:3000', 'https://sparkling-rolypoly-556150.netlify.app'] })
+    );
     app.use(bodyParser.json());
 
     // register express routes from defined application routes

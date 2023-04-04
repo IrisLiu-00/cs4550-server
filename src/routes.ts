@@ -22,6 +22,24 @@ export const Routes = [
     action: 'patch',
   },
   {
+    method: 'post',
+    route: 'users/signup',
+    controller: UserController,
+    action: 'signup',
+  },
+  {
+    method: 'post',
+    route: 'users/login',
+    controller: UserController,
+    action: 'login',
+  },
+  {
+    method: 'post',
+    route: 'users/logout',
+    controller: UserController,
+    action: 'logout',
+  },
+  {
     method: 'get',
     route: 'stories/:id',
     controller: StoryController,
