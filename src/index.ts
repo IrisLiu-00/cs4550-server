@@ -12,17 +12,18 @@ import { seeds } from './seed/seeds';
 AppDataSource.initialize()
   .then(async () => {
     const app = express();
+    const sess: session.SessionOptions = {
+      secret: process.env.SECRET,
+      resave: false,
+      saveUninitialized: true,
+      cookie: { secure: false },
+    };
     if (process.env.ENV === 'PROD') {
       app.set('trust proxy', 1);
+      sess.cookie.secure = true;
+      sess.cookie.sameSite = 'none';
     }
-    app.use(
-      session({
-        secret: process.env.SECRET,
-        resave: false,
-        saveUninitialized: true,
-        cookie: { secure: process.env.ENV === 'PROD' },
-      })
-    );
+    app.use(session(sess));
     app.use(cors({ credentials: true, origin: process.env.CORS_ORIGIN }));
     app.use(bodyParser.json());
 
