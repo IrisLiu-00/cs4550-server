@@ -12,17 +12,18 @@ import { seeds } from './seed/seeds';
 AppDataSource.initialize()
   .then(async () => {
     const app = express();
+    if (process.env.ENV === 'PROD') {
+      app.set('trust proxy', 1);
+    }
     app.use(
       session({
         secret: process.env.SECRET,
         resave: false,
         saveUninitialized: true,
-        cookie: { secure: false },
+        cookie: { secure: process.env.ENV === 'PROD' },
       })
     );
-    app.use(
-      cors({ credentials: true, origin: ['http://localhost:3000', 'https://sparkling-rolypoly-556150.netlify.app'] })
-    );
+    app.use(cors({ credentials: true, origin: process.env.CORS_ORIGIN }));
     app.use(bodyParser.json());
 
     // register express routes from defined application routes
