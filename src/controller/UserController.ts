@@ -58,7 +58,7 @@ export class UserController {
     } catch (err) {
       console.error(err.message);
       response.status(400);
-      if (err.code === 'ER_DUP_ENTRY') return 'Username already in use.';
+      if (err.code === '23505') return 'Username already in use.';
     }
   }
 

@@ -6,13 +6,13 @@ import { UserRole } from '../types';
 export class UserService {
   async registerLeader(body: any) {
     const { email, username, password, teamName, teamDesc, teamColor } = body;
-    let team: Team;
-    try {
-      team = await Team.create({ id: teamName, color: teamColor, description: teamDesc }).save();
-    } catch (err) {
-      if (err.code === 'ER_DUP_ENTRY') throw Error('Team name already in use');
-      else throw err;
+    const oldTeam = await Team.findOne({ where: { id: teamName } });
+    if (oldTeam) {
+      throw new Error('Team name already in use');
     }
+    let team: Team;
+    team = await Team.create({ id: teamName, color: teamColor, description: teamDesc }).save();
+
     const user = await User.create({
       email,
       password,
