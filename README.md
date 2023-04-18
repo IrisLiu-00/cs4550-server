@@ -1,3 +1,9 @@
+# Storyline
+
+UML diagram for database models:
+
+![uml diagram](Storyline_UML.jpeg)
+
 # Awesome Project Build with TypeORM
 
 Steps to run this project:
